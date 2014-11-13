@@ -81,6 +81,19 @@ OPEXECUTOR Engine::DefaultExecutors[] =
 
 	Engine::do_srd,      // stack read
 	Engine::do_swr,      // stack write
+	Engine::do_srd1,
+	Engine::do_srd2,
+	Engine::do_srd3,
+	Engine::do_srd4,
+	Engine::do_srd5,
+	Engine::do_swr1,
+	Engine::do_swr2,
+	Engine::do_swr3,
+	Engine::do_swr4,
+	Engine::do_swr5,
+	Engine::do_trd0,     // tape read 0
+	Engine::do_twr0,     // tape write 0
+	Engine::do_trs0,     // tape read 0 to stack
 };
 
 FUNCEXECUTOR Engine::FuncExecutors[] =
@@ -119,7 +132,7 @@ void Engine::PrepareExecutors(void)
 	int i = 0;
 
 	// Each legal opcode has a distinct executor:
-	for (; i <= op_swr; ++i)
+	for (; i < op_TOTAL; ++i)
 		Engine::Executors[i] = Engine::DefaultExecutors[i];
 
 	// All illegal opcodes have the same executor:
@@ -1161,7 +1174,7 @@ void Engine::do_srd(States *states)
 	offset = kimlDeserializeUInt(states->code + states->codepointer);
 	states->codepointer += sizeof(KIMLUINT);
 
-	if (offset < 0 || offset > states->kstack.size())
+	if (offset < 1 || offset > states->kstack.size())
 	{
 		states->err = KRE_STACK_PTR_OOR;
 		states->isRunning = false;
@@ -1179,7 +1192,7 @@ void Engine::do_swr(States *states)
 	offset = kimlDeserializeUInt(states->code + states->codepointer);
 	states->codepointer += sizeof(KIMLUINT);
 
-	if (offset < 0 || offset > states->kstack.size())
+	if (offset < 1 || offset > states->kstack.size())
 	{
 		states->err = KRE_STACK_PTR_OOR;
 		states->isRunning = false;
@@ -1188,6 +1201,181 @@ void Engine::do_swr(States *states)
 
 	states->kstack[states->kstack.size() - offset] = states->estack.back();
 	states->estack.pop_back();
+}
+
+void Engine::do_srd1(States *states)
+{
+	++states->codepointer;
+
+	const KIMLUINT offset = 1;
+	if (offset > states->kstack.size())
+	{
+		states->err = KRE_STACK_PTR_OOR;
+		states->isRunning = false;
+		return;
+	}
+
+	states->estack.push_back(*(&states->kstack.back() - (offset - 1)));
+}
+
+void Engine::do_srd2(States *states)
+{
+	++states->codepointer;
+
+	const KIMLUINT offset = 2;
+	if (offset > states->kstack.size())
+	{
+		states->err = KRE_STACK_PTR_OOR;
+		states->isRunning = false;
+		return;
+	}
+
+	states->estack.push_back(*(&states->kstack.back() - (offset - 1)));
+}
+
+void Engine::do_srd3(States *states)
+{
+	++states->codepointer;
+
+	const KIMLUINT offset = 3;
+	if (offset > states->kstack.size())
+	{
+		states->err = KRE_STACK_PTR_OOR;
+		states->isRunning = false;
+		return;
+	}
+
+	states->estack.push_back(*(&states->kstack.back() - (offset - 1)));
+}
+
+void Engine::do_srd4(States *states)
+{
+	++states->codepointer;
+
+	const KIMLUINT offset = 4;
+	if (offset > states->kstack.size())
+	{
+		states->err = KRE_STACK_PTR_OOR;
+		states->isRunning = false;
+		return;
+	}
+
+	states->estack.push_back(*(&states->kstack.back() - (offset - 1)));
+}
+
+void Engine::do_srd5(States *states)
+{
+	++states->codepointer;
+
+	const KIMLUINT offset = 5;
+	if (offset > states->kstack.size())
+	{
+		states->err = KRE_STACK_PTR_OOR;
+		states->isRunning = false;
+		return;
+	}
+
+	states->estack.push_back(*(&states->kstack.back() - (offset - 1)));
+}
+
+void Engine::do_swr1(States *states)
+{
+	++states->codepointer;
+
+	const KIMLUINT offset = 1;
+	if (offset > states->kstack.size())
+	{
+		states->err = KRE_STACK_PTR_OOR;
+		states->isRunning = false;
+		return;
+	}
+
+	states->kstack[states->kstack.size() - offset] = states->estack.back();
+	states->estack.pop_back();
+}
+
+void Engine::do_swr2(States *states)
+{
+	++states->codepointer;
+
+	const KIMLUINT offset = 2;
+	if (offset > states->kstack.size())
+	{
+		states->err = KRE_STACK_PTR_OOR;
+		states->isRunning = false;
+		return;
+	}
+
+	states->kstack[states->kstack.size() - offset] = states->estack.back();
+	states->estack.pop_back();
+}
+
+void Engine::do_swr3(States *states)
+{
+	++states->codepointer;
+
+	const KIMLUINT offset = 3;
+	if (offset > states->kstack.size())
+	{
+		states->err = KRE_STACK_PTR_OOR;
+		states->isRunning = false;
+		return;
+	}
+
+	states->kstack[states->kstack.size() - offset] = states->estack.back();
+	states->estack.pop_back();
+}
+
+void Engine::do_swr4(States *states)
+{
+	++states->codepointer;
+
+	const KIMLUINT offset = 4;
+	if (offset > states->kstack.size())
+	{
+		states->err = KRE_STACK_PTR_OOR;
+		states->isRunning = false;
+		return;
+	}
+
+	states->kstack[states->kstack.size() - offset] = states->estack.back();
+	states->estack.pop_back();
+}
+
+void Engine::do_swr5(States *states)
+{
+	++states->codepointer;
+
+	const KIMLUINT offset = 5;
+	if (offset > states->kstack.size())
+	{
+		states->err = KRE_STACK_PTR_OOR;
+		states->isRunning = false;
+		return;
+	}
+
+	states->kstack[states->kstack.size() - offset] = states->estack.back();
+	states->estack.pop_back();
+}
+
+void Engine::do_trd0(States *states)
+{
+	++states->codepointer;
+	states->estack.push_back(states->tape[0]);
+}
+
+void Engine::do_twr0(States *states)
+{
+	++states->codepointer;
+
+	states->tape[0] = states->estack.back();
+	states->estack.pop_back();
+}
+
+void Engine::do_trs0(States *states)
+{
+	++states->codepointer;
+	states->kstack.push_back(states->tape[0]);
 }
 
 void Engine::do_illegal(States *states)

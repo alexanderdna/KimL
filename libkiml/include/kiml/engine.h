@@ -87,6 +87,19 @@ private:
 
 	static void do_srd(States *states);
 	static void do_swr(States *states);
+	static void do_srd1(States *states);
+	static void do_srd2(States *states);
+	static void do_srd3(States *states);
+	static void do_srd4(States *states);
+	static void do_srd5(States *states);
+	static void do_swr1(States *states);
+	static void do_swr2(States *states);
+	static void do_swr3(States *states);
+	static void do_swr4(States *states);
+	static void do_swr5(States *states);
+	static void do_trd0(States *states);
+	static void do_twr0(States *states);
+	static void do_trs0(States *states);
 
 	static void do_illegal(States *states);
 

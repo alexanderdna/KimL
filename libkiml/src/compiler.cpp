@@ -420,8 +420,30 @@ void Compiler::Emit(AstStatement *statement)
 	case STACKREAD:
 		{
 			auto stackread = static_cast<AstStackRead *>(statement);
-			bytecode << op_srd << stackread->getOffset()->getConstValue()->getInt();
-			
+
+			KIMLINT offset = stackread->getOffset()->getConstValue()->getInt();
+			switch (offset)
+			{
+				case 1:
+					bytecode << op_srd1;
+					break;
+				case 2:
+					bytecode << op_srd2;
+					break;
+				case 3:
+					bytecode << op_srd3;
+					break;
+				case 4:
+					bytecode << op_srd4;
+					break;
+				case 5:
+					bytecode << op_srd5;
+					break;
+				default:
+					bytecode << op_srd << offset;
+					break;
+			}
+
 			KIMLTYPES t;
 			this->symbolTable->GetSymbolType(stackread->getVarName(), t);
 
@@ -450,7 +472,28 @@ void Compiler::Emit(AstStatement *statement)
 			auto stackwrite = static_cast<AstStackWrite *>(statement);
 			this->Emit(stackwrite->getValue());
 
-			bytecode << op_swr << stackwrite->getOffset()->getConstValue()->getInt();
+			KIMLINT offset = stackwrite->getOffset()->getConstValue()->getInt();
+			switch (offset)
+			{
+				case 1:
+					bytecode << op_swr1;
+					break;
+				case 2:
+					bytecode << op_swr2;
+					break;
+				case 3:
+					bytecode << op_swr3;
+					break;
+				case 4:
+					bytecode << op_swr4;
+					break;
+				case 5:
+					bytecode << op_swr5;
+					break;
+				default:
+					bytecode << op_swr << offset;
+					break;
+			}
 		}
 		break;
 
@@ -458,9 +501,17 @@ void Compiler::Emit(AstStatement *statement)
 		{
 			auto taperead = static_cast<AstTapeRead *>(statement);
 			if (taperead->getIndex())
-				bytecode << op_trdx << taperead->getIndex()->getConstValue()->getInt();
+			{
+				KIMLINT idx = taperead->getIndex()->getConstValue()->getInt();
+				if (idx == 0)
+					bytecode << op_trd0;
+				else
+					bytecode << op_trdx << idx;
+			}
 			else
+			{
 				bytecode << op_trd;
+			}
 
 			KIMLTYPES t;
 
@@ -498,9 +549,17 @@ void Compiler::Emit(AstStatement *statement)
 			this->Emit(tapewrite->getValue());
 
 			if (tapewrite->getIndex())
-				bytecode << op_twrx << tapewrite->getIndex()->getConstValue()->getInt();
+			{
+				KIMLINT idx = tapewrite->getIndex()->getConstValue()->getInt();
+				if (idx == 0)
+					bytecode << op_twr0;
+				else
+					bytecode << op_twrx << idx;
+			}
 			else
+			{
 				bytecode << op_twr;
+			}
 		}
 		break;
 

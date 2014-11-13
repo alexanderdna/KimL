@@ -76,6 +76,21 @@ enum OpCodes
 	// added in 14.11
 	op_srd    = 0x41,    // stack read
 	op_swr    = 0x42,    // stack write
+	op_srd1   = 0x43,    // stack read offset 1
+	op_srd2   = 0x44,    // stack read offset 2
+	op_srd3   = 0x45,    // stack read offset 3
+	op_srd4   = 0x46,    // stack read offset 4
+	op_srd5   = 0x47,    // stack read offset 5
+	op_swr1   = 0x48,    // stack write offset 1
+	op_swr2   = 0x49,    // stack write offset 2
+	op_swr3   = 0x4A,    // stack write offset 3
+	op_swr4   = 0x4B,    // stack write offset 4
+	op_swr5   = 0x4C,    // stack write offset 5
+	op_trd0   = 0x4D,    // tape read index 0
+	op_twr0   = 0x4E,    // tape write index 0
+	op_trs0   = 0x4F,    // tape read index 0 to stack
+
+	op_TOTAL  = op_trs0 + 1
 };
 
 #endif//__OPCODES_H__
