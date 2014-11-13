@@ -40,6 +40,7 @@ typedef uint32_t      KIMLUINT;
 typedef float         KIMLFLOAT;
 typedef char *        KIMLSTRING;
 typedef const char *  KIMLCSTRING;
+typedef void *        KIMLOBJECT;
 
 typedef int           KIMLBOOL;
 #ifndef TRUE
@@ -56,7 +57,8 @@ enum KIMLTYPES
 	KIML_INT     = 0x02,
 	KIML_REAL    = 0x03,
 	KIML_STRING  = 0x04,
-	KIML_ANYTYPE = 0x05
+	KIML_ANYTYPE = 0x05,
+	KIML_OBJECT  = 0x06
 };
 
 /* =====================================================
@@ -149,6 +151,7 @@ typedef struct KIMLVALUE
 		KIMLINT     i;
 		KIMLFLOAT   f;
 		KIMLCSTRING s;
+		KIMLOBJECT  o;
 	} v;
 
 #ifdef __cplusplus
@@ -162,6 +165,8 @@ typedef struct KIMLVALUE
 		: type(type) { this->v.f = v; }
 	KIMLVALUE(KIMLTYPES type, KIMLCSTRING v)
 		: type(type) { this->v.s = v; }
+	KIMLVALUE(KIMLTYPES type, KIMLOBJECT v)
+		: type(type) { this->v.o = v; }
 #endif
 
 } KIMLVALUE;
@@ -208,6 +213,8 @@ KIML_API KIMLVOID kimlStackPushReal(HKIMLSTATES states, KIMLFLOAT value);
 
 KIML_API KIMLVOID kimlStackPushString(HKIMLSTATES states, KIMLCSTRING value);
 
+KIML_API KIMLVOID kimlStackPushObject(HKIMLSTATES states, KIMLOBJECT value);
+
 KIML_API KIMLVOID kimlStackPeek(HKIMLSTATES states, KIMLUINT offset, KIMLVALUE *value);
 
 KIML_API KIMLVOID kimlStackPeekBool(HKIMLSTATES states, KIMLUINT offset, KIMLBOOL *value);
@@ -218,6 +225,8 @@ KIML_API KIMLVOID kimlStackPeekReal(HKIMLSTATES states, KIMLUINT offset, KIMLFLO
 
 KIML_API KIMLVOID kimlStackPeekString(HKIMLSTATES states, KIMLUINT offset, KIMLCSTRING *value);
 
+KIML_API KIMLVOID kimlStackPeekObject(HKIMLSTATES states, KIMLUINT offset, KIMLOBJECT *value);
+
 KIML_API KIMLVOID kimlStackPop(HKIMLSTATES states, KIMLVALUE *value);
 
 KIML_API KIMLVOID kimlStackPopBool(HKIMLSTATES states, KIMLBOOL *value);
@@ -227,6 +236,8 @@ KIML_API KIMLVOID kimlStackPopInt(HKIMLSTATES states, KIMLINT *value);
 KIML_API KIMLVOID kimlStackPopReal(HKIMLSTATES states, KIMLFLOAT *value);
 
 KIML_API KIMLVOID kimlStackPopString(HKIMLSTATES states, KIMLCSTRING *value);
+
+KIML_API KIMLVOID kimlStackPopObject(HKIMLSTATES states, KIMLOBJECT *value);
 
 KIML_API KIMLVOID kimlStackClear(HKIMLSTATES states, KIMLUINT count);
 
@@ -242,6 +253,8 @@ KIML_API KIMLVOID kimlTapeWriteReal(HKIMLSTATES states, KIMLUINT index, KIMLFLOA
 
 KIML_API KIMLVOID kimlTapeWriteString(HKIMLSTATES states, KIMLUINT index, KIMLCSTRING value);
 
+KIML_API KIMLVOID kimlTapeWriteObject(HKIMLSTATES states, KIMLUINT index, KIMLOBJECT value);
+
 KIML_API KIMLVOID kimlTapeRead(HKIMLSTATES states, KIMLUINT index, KIMLVALUE *value);
 
 KIML_API KIMLVOID kimlTapeReadBool(HKIMLSTATES states, KIMLUINT index, KIMLBOOL *value);
@@ -252,6 +265,8 @@ KIML_API KIMLVOID kimlTapeReadReal(HKIMLSTATES states, KIMLUINT index, KIMLFLOAT
 
 KIML_API KIMLVOID kimlTapeReadString(HKIMLSTATES states, KIMLUINT index, KIMLCSTRING *value);
 
+KIML_API KIMLVOID kimlTapeReadObject(HKIMLSTATES states, KIMLUINT index, KIMLOBJECT *value);
+
 KIML_API KIMLBOOL kimlCreateVariable(HKIMLSTATES states, KIMLUINT nameHash, const KIMLVALUE *value);
 
 KIML_API KIMLBOOL kimlCreateVariableBool(HKIMLSTATES states, KIMLUINT nameHash, KIMLBOOL value);
@@ -261,6 +276,8 @@ KIML_API KIMLBOOL kimlCreateVariableInt(HKIMLSTATES states, KIMLUINT nameHash, K
 KIML_API KIMLBOOL kimlCreateVariableReal(HKIMLSTATES states, KIMLUINT nameHash, KIMLFLOAT value);
 
 KIML_API KIMLBOOL kimlCreateVariableString(HKIMLSTATES states, KIMLUINT nameHash, KIMLCSTRING value);
+
+KIML_API KIMLBOOL kimlCreateVariableObject(HKIMLSTATES states, KIMLUINT nameHash, KIMLOBJECT value);
 
 KIML_API KIMLBOOL kimlDeleteVariable(HKIMLSTATES states, KIMLUINT nameHash);
 
@@ -274,6 +291,8 @@ KIML_API KIMLBOOL kimlGetVariableReal(HKIMLSTATES states, KIMLUINT nameHash, KIM
 
 KIML_API KIMLBOOL kimlGetVariableString(HKIMLSTATES states, KIMLUINT nameHash, KIMLCSTRING *value);
 
+KIML_API KIMLBOOL kimlGetVariableObject(HKIMLSTATES states, KIMLUINT nameHash, KIMLOBJECT *value);
+
 KIML_API KIMLBOOL kimlSetVariable(HKIMLSTATES states, KIMLUINT nameHash, const KIMLVALUE *value);
 
 KIML_API KIMLBOOL kimlSetVariableBool(HKIMLSTATES states, KIMLUINT nameHash, KIMLBOOL value);
@@ -283,6 +302,8 @@ KIML_API KIMLBOOL kimlSetVariableInt(HKIMLSTATES states, KIMLUINT nameHash, KIML
 KIML_API KIMLBOOL kimlSetVariableReal(HKIMLSTATES states, KIMLUINT nameHash, KIMLFLOAT value);
 
 KIML_API KIMLBOOL kimlSetVariableString(HKIMLSTATES states, KIMLUINT nameHash, KIMLCSTRING value);
+
+KIML_API KIMLBOOL kimlSetVariableObject(HKIMLSTATES states, KIMLUINT nameHash, KIMLOBJECT value);
 
 KIML_API KIMLTYPES kimlGetVariableType(HKIMLSTATES states, KIMLUINT nameHash);
 

@@ -19,6 +19,7 @@ private:
 		KIMLINT     ivalue;
 		KIMLFLOAT   fvalue;
 		KIMLCSTRING svalue;
+		KIMLOBJECT  ovalue;
 	};
 
 public:
@@ -61,6 +62,9 @@ public:
 
 	Object(KIMLCSTRING v)
 		: datatype(KIML_STRING), svalue(kimlstrdup(v)) { }
+
+	Object(KIMLOBJECT v)
+		: datatype(KIML_OBJECT), ovalue(v) { }
 
 	~Object(void)
 	{
@@ -130,6 +134,17 @@ public:
 		return *this;
 	}
 
+	Object & operator=(KIMLOBJECT val)
+	{
+		if (this->datatype == KIML_STRING && this->svalue)
+			delete []this->svalue;
+
+		this->datatype = KIML_OBJECT;
+		this->ovalue = val;
+
+		return *this;
+	}
+
 	Object & operator=(Object &&src)
 	{
 		if (this != &src)
@@ -147,7 +162,7 @@ public:
 			delete []svalue;
 
 		datatype = value.type;
-		svalue = value.v.s;
+		ovalue = value.v.o;
 		if (datatype == KIML_STRING)
 			svalue = kimlstrdup(svalue);
 	}
@@ -155,7 +170,7 @@ public:
 	void To(KIMLVALUE &value)
 	{
 		value.type = datatype;
-		value.v.s = svalue;
+		value.v.o = ovalue;
 		if (datatype == KIML_STRING)
 			value.v.s = kimlstrdup(svalue);
 	}
@@ -174,6 +189,8 @@ public:
 			return fvalue != 0 ? TRUE : FALSE;
 		case KIML_STRING:
 			return svalue[0] == 0 ? FALSE : (strlen(svalue) != 0 ? FALSE : TRUE);
+		case KIML_OBJECT:
+			return ovalue != nullptr;
 		default:
 			return FALSE;
 		}
@@ -197,6 +214,8 @@ public:
 					result = (KIMLINT)0;
 			}
 			return result;
+		case KIML_OBJECT:
+			return (KIMLINT)ovalue;
 		default:
 			return 0;
 		}
@@ -254,6 +273,21 @@ public:
 			result = nullptr;
 		}
 		return result;
+	}
+
+	KIMLOBJECT getObject(void) const
+	{
+		switch (this->datatype)
+		{
+		case KIML_INT:
+			return (KIMLOBJECT)ivalue;
+		case KIML_STRING:
+			return (KIMLOBJECT)svalue;
+		case KIML_OBJECT:
+			return ovalue;
+		default:
+			return nullptr;
+		}
 	}
 
 	Object operator +(const Object &rhs) const
@@ -338,6 +372,8 @@ public:
 			return Object(this->getInt() == rhs.getInt());
 		case KIML_REAL:
 			return Object(this->getFloat() == rhs.getFloat());
+		case KIML_OBJECT:
+			return Object(this->getObject() == rhs.getObject());
 		default:
 			{
 				KIMLCSTRING s1 = this->getString();
@@ -360,6 +396,8 @@ public:
 			return Object(this->getInt() != rhs.getInt());
 		case KIML_REAL:
 			return Object(this->getFloat() != rhs.getFloat());
+		case KIML_OBJECT:
+			return Object(this->getObject() != rhs.getObject());
 		default:
 			{
 				KIMLCSTRING s1 = this->getString();
@@ -380,6 +418,8 @@ public:
 			return Object(this->getInt() < rhs.getInt());
 		case KIML_REAL:
 			return Object(this->getFloat() < rhs.getFloat());
+		case KIML_OBJECT:
+			return Object((intptr_t)this->getObject() < (intptr_t)rhs.getObject());
 		default:
 			return Object(false);
 		}
@@ -393,6 +433,8 @@ public:
 			return Object(this->getInt() <= rhs.getInt());
 		case KIML_REAL:
 			return Object(this->getFloat() <= rhs.getFloat());
+		case KIML_OBJECT:
+			return Object((intptr_t)this->getObject() <= (intptr_t)rhs.getObject());
 		default:
 			return Object(false);
 		}
@@ -406,6 +448,8 @@ public:
 			return Object(this->getInt() > rhs.getInt());
 		case KIML_REAL:
 			return Object(this->getFloat() > rhs.getFloat());
+		case KIML_OBJECT:
+			return Object((intptr_t)this->getObject() > (intptr_t)rhs.getObject());
 		default:
 			return Object(false);
 		}
@@ -419,6 +463,8 @@ public:
 			return Object(this->getInt() >= rhs.getInt());
 		case KIML_REAL:
 			return Object(this->getFloat() >= rhs.getFloat());
+		case KIML_OBJECT:
+			return Object((intptr_t)this->getObject() >= (intptr_t)rhs.getObject());
 		default:
 			return Object(false);
 		}

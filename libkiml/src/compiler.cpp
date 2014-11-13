@@ -220,6 +220,9 @@ void Compiler::Emit(AstStatement *statement)
 				case KIML_STRING:
 					bytecode << op_in << op_stvar << h;
 					break;
+				case KIML_OBJECT:
+					bytecode << op_in << op_cvo << op_stvar << h;
+					break;
 				}
 			}
 			else
@@ -237,6 +240,9 @@ void Compiler::Emit(AstStatement *statement)
 					break;
 				case KIML_STRING:
 					bytecode << op_in << op_push;
+					break;
+				case KIML_OBJECT:
+					bytecode << op_in << op_cvo << op_push;
 					break;
 				}
 			}
@@ -276,6 +282,9 @@ void Compiler::Emit(AstStatement *statement)
 					case KIML_STRING:
 						bytecode << op_cvs;
 						break;
+					case KIML_OBJECT:
+						bytecode << op_cvo;
+						break;
 					}
 				}
 			}
@@ -294,6 +303,9 @@ void Compiler::Emit(AstStatement *statement)
 						break;
 					case KIML_STRING:
 						bytecode << op_ldes;
+						break;
+					case KIML_OBJECT:
+						bytecode << op_ldnull;
 						break;
 				}
 			}
@@ -326,6 +338,9 @@ void Compiler::Emit(AstStatement *statement)
 					break;
 				case KIML_STRING:
 					bytecode << op_cvs;
+					break;
+				case KIML_OBJECT:
+					bytecode << op_cvo;
 					break;
 				}
 			}
@@ -371,6 +386,9 @@ void Compiler::Emit(AstStatement *statement)
 				case KIML_STRING:
 					bytecode << op_smv << op_cvs;
 					break;
+				case KIML_OBJECT:
+					bytecode << op_smv << op_cvo;
+					break;
 				}
 			}
 			else
@@ -399,6 +417,9 @@ void Compiler::Emit(AstStatement *statement)
 			case KIML_STRING:
 				bytecode << op_stf << op_cvs;
 				break;
+			case KIML_OBJECT:
+				bytecode << op_stf << op_cvo;
+				break;
 			}
 		}
 		break;
@@ -424,24 +445,24 @@ void Compiler::Emit(AstStatement *statement)
 			KIMLINT offset = stackread->getOffset()->getConstValue()->getInt();
 			switch (offset)
 			{
-				case 1:
-					bytecode << op_srd1;
-					break;
-				case 2:
-					bytecode << op_srd2;
-					break;
-				case 3:
-					bytecode << op_srd3;
-					break;
-				case 4:
-					bytecode << op_srd4;
-					break;
-				case 5:
-					bytecode << op_srd5;
-					break;
-				default:
-					bytecode << op_srd << offset;
-					break;
+			case 1:
+				bytecode << op_srd1;
+				break;
+			case 2:
+				bytecode << op_srd2;
+				break;
+			case 3:
+				bytecode << op_srd3;
+				break;
+			case 4:
+				bytecode << op_srd4;
+				break;
+			case 5:
+				bytecode << op_srd5;
+				break;
+			default:
+				bytecode << op_srd << offset;
+				break;
 			}
 
 			KIMLTYPES t;
@@ -449,17 +470,20 @@ void Compiler::Emit(AstStatement *statement)
 
 			switch (t)
 			{
-				case KIML_BOOL:
+			case KIML_BOOL:
 				bytecode << op_cvb;
 				break;
-				case KIML_INT:
+			case KIML_INT:
 				bytecode << op_cvi;
 				break;
-				case KIML_REAL:
+			case KIML_REAL:
 				bytecode << op_cvr;
 				break;
-				case KIML_STRING:
+			case KIML_STRING:
 				bytecode << op_cvs;
+				break;
+			case KIML_OBJECT:
+				bytecode << op_cvo;
 				break;
 			}
 
@@ -475,24 +499,24 @@ void Compiler::Emit(AstStatement *statement)
 			KIMLINT offset = stackwrite->getOffset()->getConstValue()->getInt();
 			switch (offset)
 			{
-				case 1:
-					bytecode << op_swr1;
-					break;
-				case 2:
-					bytecode << op_swr2;
-					break;
-				case 3:
-					bytecode << op_swr3;
-					break;
-				case 4:
-					bytecode << op_swr4;
-					break;
-				case 5:
-					bytecode << op_swr5;
-					break;
-				default:
-					bytecode << op_swr << offset;
-					break;
+			case 1:
+				bytecode << op_swr1;
+				break;
+			case 2:
+				bytecode << op_swr2;
+				break;
+			case 3:
+				bytecode << op_swr3;
+				break;
+			case 4:
+				bytecode << op_swr4;
+				break;
+			case 5:
+				bytecode << op_swr5;
+				break;
+			default:
+				bytecode << op_swr << offset;
+				break;
 			}
 		}
 		break;
@@ -533,6 +557,9 @@ void Compiler::Emit(AstStatement *statement)
 				break;
 			case KIML_STRING:
 				bytecode << op_cvs;
+				break;
+			case KIML_OBJECT:
+				bytecode << op_cvo;
 				break;
 			}
 
@@ -677,6 +704,9 @@ void Compiler::Emit(AstStatement *statement)
 						break;
 					case KIML_STRING:
 						bytecode << op_cvs;
+						break;
+					case KIML_OBJECT:
+						bytecode << op_cvo;
 						break;
 					}
 				}
@@ -940,6 +970,9 @@ void Compiler::Emit(AstExpression *expression)
 					case KIML_STRING:
 						bytecode << op_cvs;
 						break;
+					case KIML_OBJECT:
+						bytecode << op_cvo;
+						break;
 					}
 				}
 
@@ -976,6 +1009,9 @@ void Compiler::Emit(AstExpression *expression)
 				break;
 			case KIML_STRING:
 				bytecode << op_cvs;
+				break;
+			case KIML_OBJECT:
+				bytecode << op_cvo;
 				break;
 			}
 		}

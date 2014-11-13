@@ -89,8 +89,10 @@ enum OpCodes
 	op_trd0   = 0x4D,    // tape read index 0
 	op_twr0   = 0x4E,    // tape write index 0
 	op_trs0   = 0x4F,    // tape read index 0 to stack
+	op_ldnull = 0x50,    // load null
+	op_cvo    = 0x51,    // convert to object
 
-	op_TOTAL  = op_trs0 + 1
+	op_TOTAL  = op_cvo + 1
 };
 
 #endif//__OPCODES_H__

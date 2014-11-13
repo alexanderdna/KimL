@@ -100,6 +100,8 @@ private:
 	static void do_trd0(States *states);
 	static void do_twr0(States *states);
 	static void do_trs0(States *states);
+	static void do_ldnull(States *states);
+	static void do_cvo(States *states);
 
 	static void do_illegal(States *states);
 

@@ -94,6 +94,8 @@ OPEXECUTOR Engine::DefaultExecutors[] =
 	Engine::do_trd0,     // tape read 0
 	Engine::do_twr0,     // tape write 0
 	Engine::do_trs0,     // tape read 0 to stack
+	Engine::do_ldnull,
+	Engine::do_cvo,
 };
 
 FUNCEXECUTOR Engine::FuncExecutors[] =
@@ -1376,6 +1378,20 @@ void Engine::do_trs0(States *states)
 {
 	++states->codepointer;
 	states->kstack.push_back(states->tape[0]);
+}
+
+void Engine::do_ldnull(States *states)
+{
+	++states->codepointer;
+	states->estack.push_back(Object((KIMLOBJECT)nullptr));
+}
+
+void Engine::do_cvo(States *states)
+{
+	++states->codepointer;
+
+	Object obj(states->estack.back().getObject());
+	states->estack.push_back(obj);
 }
 
 void Engine::do_illegal(States *states)

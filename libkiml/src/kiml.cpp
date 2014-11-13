@@ -289,6 +289,11 @@ KIML_API KIMLVOID kimlStackPushString(HKIMLSTATES states, KIMLCSTRING value)
 	STATES->getKStack().push_back(Object(value));
 }
 
+KIML_API KIMLVOID kimlStackPushObject(HKIMLSTATES states, KIMLOBJECT value)
+{
+	STATES->getKStack().push_back(Object(value));
+}
+
 KIML_API KIMLVOID kimlStackPeek(HKIMLSTATES states, KIMLUINT offset, KIMLVALUE *value)
 {
 	(&STATES->getKStack().back() - (offset - 1))->To(*value);
@@ -312,6 +317,11 @@ KIML_API KIMLVOID kimlStackPeekReal(HKIMLSTATES states, KIMLUINT offset, KIMLFLO
 KIML_API KIMLVOID kimlStackPeekString(HKIMLSTATES states, KIMLUINT offset, KIMLCSTRING *value)
 {
 	*value = (&STATES->getKStack().back() - (offset - 1))->getString();
+}
+
+KIML_API KIMLVOID kimlStackPeekObject(HKIMLSTATES states, KIMLUINT offset, KIMLOBJECT *value)
+{
+	*value = (&STATES->getKStack().back() - (offset - 1))->getObject();
 }
 
 KIML_API KIMLVOID kimlStackPop(HKIMLSTATES states, KIMLVALUE *value)
@@ -341,6 +351,12 @@ KIML_API KIMLVOID kimlStackPopReal(HKIMLSTATES states, KIMLFLOAT *value)
 KIML_API KIMLVOID kimlStackPopString(HKIMLSTATES states, KIMLCSTRING *value)
 {
 	*value = STATES->getKStack().back().getString();
+	STATES->getKStack().pop_back();
+}
+
+KIML_API KIMLVOID kimlStackPopObject(HKIMLSTATES states, KIMLOBJECT *value)
+{
+	*value = STATES->getKStack().back().getObject();
 	STATES->getKStack().pop_back();
 }
 
@@ -390,6 +406,11 @@ KIML_API KIMLVOID kimlTapeWriteString(HKIMLSTATES states, KIMLUINT index, KIMLCS
 	STATES->getTape()[index] = value;
 }
 
+KIML_API KIMLVOID kimlTapeWriteObject(HKIMLSTATES states, KIMLUINT index, KIMLOBJECT value)
+{
+	STATES->getTape()[index] = value;
+}
+
 KIML_API KIMLVOID kimlTapeRead(HKIMLSTATES states, KIMLUINT index, KIMLVALUE *value)
 {
 	STATES->getTape()[index].To(*value);
@@ -413,6 +434,11 @@ KIML_API KIMLVOID kimlTapeReadReal(HKIMLSTATES states, KIMLUINT index, KIMLFLOAT
 KIML_API KIMLVOID kimlTapeReadString(HKIMLSTATES states, KIMLUINT index, KIMLCSTRING *value)
 {
 	*value = STATES->getTape()[index].getString();
+}
+
+KIML_API KIMLVOID kimlTapeReadObject(HKIMLSTATES states, KIMLUINT index, KIMLOBJECT *value)
+{
+	*value = STATES->getTape()[index].getObject();
 }
 
 KIML_API KIMLBOOL kimlCreateVariable(HKIMLSTATES states, KIMLUINT nameHash, const KIMLVALUE *value)
@@ -474,6 +500,18 @@ KIML_API KIMLBOOL kimlCreateVariableString(HKIMLSTATES states, KIMLUINT nameHash
 	{
 		KIMLVALUE v(KIML_STRING, value);
 		vars[nameHash].From(v);
+		return TRUE;
+	}
+}
+
+KIML_API KIMLBOOL kimlCreateVariableObject(HKIMLSTATES states, KIMLUINT nameHash, KIMLOBJECT value)
+{
+	std::map<KIMLUINT, Object> &vars = STATES->getVars();
+	if (vars.find(nameHash) != vars.end())
+		return FALSE;
+	else
+	{
+		vars[nameHash] = value;
 		return TRUE;
 	}
 }
@@ -554,6 +592,20 @@ KIML_API KIMLBOOL kimlGetVariableString(HKIMLSTATES states, KIMLUINT nameHash, K
 	}
 }
 
+KIML_API KIMLBOOL kimlGetVariableObject(HKIMLSTATES states, KIMLUINT nameHash, KIMLOBJECT *value)
+{
+	auto it = STATES->getVars().find(nameHash);
+	if (it != STATES->getVars().end())
+	{
+		*value = it->second.getObject();
+		return TRUE;
+	}
+	else
+	{
+		return FALSE;
+	}
+}
+
 KIML_API KIMLBOOL kimlSetVariable(HKIMLSTATES states, KIMLUINT nameHash, const KIMLVALUE *value)
 {
 	auto it = STATES->getVars().find(nameHash);
@@ -613,6 +665,20 @@ KIML_API KIMLBOOL kimlSetVariableReal(HKIMLSTATES states, KIMLUINT nameHash, KIM
 }
 
 KIML_API KIMLBOOL kimlSetVariableString(HKIMLSTATES states, KIMLUINT nameHash, KIMLCSTRING value)
+{
+	auto it = STATES->getVars().find(nameHash);
+	if (it != STATES->getVars().end())
+	{
+		it->second = value;
+		return TRUE;
+	}
+	else
+	{
+		return FALSE;
+	}
+}
+
+KIML_API KIMLBOOL kimlSetVariableObject(HKIMLSTATES states, KIMLUINT nameHash, KIMLOBJECT value)
 {
 	auto it = STATES->getVars().find(nameHash);
 	if (it != STATES->getVars().end())

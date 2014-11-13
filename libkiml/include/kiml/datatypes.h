@@ -10,14 +10,15 @@ enum KIMLTYPEMATCH
 	K_TYPE_CAST
 };
 
-static KIMLTYPEMATCH TypeMatchTable[][6] =
-{	//           none               bool            int             real            string             any
-	/*none*/   { K_TYPE_MATCHED,    K_TYPE_MATCHED, K_TYPE_MATCHED, K_TYPE_MATCHED, K_TYPE_MATCHED,    K_TYPE_MATCHED, },
-	/*bool*/   { K_TYPE_MISMATCHED, K_TYPE_MATCHED, K_TYPE_CAST,    K_TYPE_CAST,    K_TYPE_CAST,       K_TYPE_CAST },
-	/*int*/    { K_TYPE_MISMATCHED, K_TYPE_CAST,    K_TYPE_MATCHED, K_TYPE_CAST,    K_TYPE_MISMATCHED, K_TYPE_CAST },
-	/*real*/   { K_TYPE_MISMATCHED, K_TYPE_CAST,    K_TYPE_CAST,    K_TYPE_MATCHED, K_TYPE_MISMATCHED, K_TYPE_CAST },
-	/*string*/ { K_TYPE_MISMATCHED, K_TYPE_CAST,    K_TYPE_CAST,    K_TYPE_CAST,    K_TYPE_MATCHED,    K_TYPE_CAST },
-	/*any*/    { K_TYPE_MATCHED,    K_TYPE_MATCHED, K_TYPE_MATCHED, K_TYPE_MATCHED, K_TYPE_MATCHED,    K_TYPE_MATCHED, },
+static KIMLTYPEMATCH TypeMatchTable[][7] =
+{	//           none               bool               int             real               string             any             object
+	/*none*/   { K_TYPE_MATCHED,    K_TYPE_MATCHED,    K_TYPE_MATCHED, K_TYPE_MATCHED,    K_TYPE_MATCHED,    K_TYPE_MATCHED, K_TYPE_MATCHED },
+	/*bool*/   { K_TYPE_MISMATCHED, K_TYPE_MATCHED,    K_TYPE_CAST,    K_TYPE_CAST,       K_TYPE_CAST,       K_TYPE_CAST,    K_TYPE_CAST },
+	/*int*/    { K_TYPE_MISMATCHED, K_TYPE_CAST,       K_TYPE_MATCHED, K_TYPE_CAST,       K_TYPE_MISMATCHED, K_TYPE_CAST,    K_TYPE_CAST },
+	/*real*/   { K_TYPE_MISMATCHED, K_TYPE_CAST,       K_TYPE_CAST,    K_TYPE_MATCHED,    K_TYPE_MISMATCHED, K_TYPE_CAST,    K_TYPE_MISMATCHED },
+	/*string*/ { K_TYPE_MISMATCHED, K_TYPE_CAST,       K_TYPE_CAST,    K_TYPE_CAST,       K_TYPE_MATCHED,    K_TYPE_CAST,    K_TYPE_MISMATCHED },
+	/*any*/    { K_TYPE_MATCHED,    K_TYPE_MATCHED,    K_TYPE_MATCHED, K_TYPE_MATCHED,    K_TYPE_MATCHED,    K_TYPE_MATCHED, K_TYPE_MATCHED },
+	/*object*/ { K_TYPE_MATCHED,    K_TYPE_MISMATCHED, K_TYPE_CAST,    K_TYPE_MISMATCHED, K_TYPE_CAST,       K_TYPE_CAST,    K_TYPE_MATCHED }
 };
 
 inline static KIMLTYPES HigherType(KIMLTYPES t1, KIMLTYPES t2)
