@@ -269,8 +269,17 @@ public:
 		case KIML_STRING:
 			result = kimlstrdup(svalue);
 			break;
+		case KIML_OBJECT:
+			{
+				if (ovalue == nullptr)
+					result = kimlstrdup("null");
+				else
+					result = kimlstrdup("(object)");
+				break;
+			}
 		default:
 			result = nullptr;
+			break;
 		}
 		return result;
 	}

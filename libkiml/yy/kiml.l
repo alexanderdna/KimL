@@ -94,9 +94,11 @@ ident		[A-Za-z_][A-Za-z_0-9]*
 "int"		return TINT;
 "real"		return TREAL;
 "string"	return TSTRING;
+"object"	return TOBJECT;
 
 "true"		return TLITTRUE;
 "false"		return TLITFALSE;
+"null"		return TNULL;
 
 "."		return TDOT;
 ":"		return TCOLON;
@@ -118,6 +120,7 @@ ident		[A-Za-z_][A-Za-z_0-9]*
 ">="		return TGEQ;
 "@"		return TCINT;
 "#"		return TCREAL;
+"$"		return TCOBJECT;
 
 {litint}	{
 			yylval->ivalue = atoi(yytext);

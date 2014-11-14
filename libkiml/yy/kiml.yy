@@ -45,10 +45,10 @@
 %token TIF TAT TBY
 
 %token TDOT TCOLON TCOMMA
-%token TIDENT TLITTRUE TLITFALSE TLITINT TLITREAL TLITSTRING
+%token TIDENT TLITTRUE TLITFALSE TNULL TLITINT TLITREAL TLITSTRING
 %token TLPAR TRPAR TEQU TNEQ TLES TLEQ TGRT TGEQ TADD TSUB TMUL TDIV TMOD TPOW TCAT TAND TOR TXOR TNOT
-%token TCINT TCREAL
-%token TANY TBOOL TINT TREAL TSTRING
+%token TCINT TCREAL TCOBJECT
+%token TANY TBOOL TINT TREAL TSTRING TOBJECT
 %token TEOS
 
 %type <svalue> TIDENT TLITSTRING
@@ -167,6 +167,8 @@ vartype
 		{ $$ = KIML_REAL; }
 	| TSTRING
 		{ $$ = KIML_STRING; }
+	| TOBJECT
+		{ $$ = KIML_OBJECT; }
 	;
 	
 ioin
@@ -330,6 +332,8 @@ rettype
 		{ $$ = KIML_REAL; }
 	| TSTRING
 		{ $$ = KIML_STRING; }
+	| TOBJECT
+		{ $$ = KIML_OBJECT; }
 	;
 
 paramtype
@@ -343,6 +347,8 @@ paramtype
 		{ $$ = KIML_REAL; }
 	| TSTRING
 		{ $$ = KIML_STRING; }
+	| TOBJECT
+		{ $$ = KIML_OBJECT; }
 	;
 	
 funccall
@@ -421,6 +427,8 @@ atom
 		{ $$ = new AstConstTrue(@1); }
 	| TLITFALSE
 		{ $$ = new AstConstFalse(@1); }
+	| TNULL
+		{ $$ = new AstConstNull(@1); }
 	| TLITINT
 		{ $$ = new AstConstInt(@1, $1); }
 	| TLITREAL
@@ -483,6 +491,8 @@ cast
 		{ $$ = new AstCast(@1, KIML_INT, $3); }
 	| TCREAL TLPAR expr TRPAR
 		{ $$ = new AstCast(@1, KIML_REAL, $3); }
+	| TCOBJECT TLPAR expr TRPAR
+		{ $$ = new AstCast(@1, KIML_OBJECT, $3); }
 	;
 	
 %%

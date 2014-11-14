@@ -1046,7 +1046,7 @@ void Engine::do_cvb(States *states)
 {
 	++states->codepointer;
 
-	Object obj(states->estack.back().getBool());
+	Object obj(states->estack.back().getBool() != 0);
 	states->estack.pop_back();
 
 	states->estack.push_back(obj);

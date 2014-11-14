@@ -781,6 +781,9 @@ void Compiler::Emit(AstExpression *expression)
 				delete []s;
 			}
 			break;
+		case KIML_OBJECT:
+			bytecode << op_ldnull; // as the only constval for object type is null
+			break;
 		}
 
 		return; //no more things to do
@@ -834,6 +837,10 @@ void Compiler::Emit(AstExpression *expression)
 
 	case EXPR_FALSE:
 		bytecode << op_ldfalse;
+		break;
+
+	case EXPR_NULL:
+		bytecode << op_ldnull;
 		break;
 
 	case EXPR_INT:
@@ -1590,6 +1597,7 @@ bool Compiler::PerformTypeCheck(AstExpression *expression)
 
 	case EXPR_TRUE:
 	case EXPR_FALSE:
+	case EXPR_NULL:
 	case EXPR_INT:
 	case EXPR_REAL:
 	case EXPR_STRING:
@@ -1743,6 +1751,10 @@ bool Compiler::FoldExpression(AstExpression *expression)
 
 	case EXPR_FALSE:
 		expression->setConstValue(new Object(false));
+		return true;
+
+	case EXPR_NULL:
+		expression->setConstValue(new Object((KIMLOBJECT)nullptr));
 		return true;
 
 	case EXPR_INT:

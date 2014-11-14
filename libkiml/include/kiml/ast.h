@@ -26,6 +26,7 @@ enum EXPRESSIONTYPES
 	EXPR_IDENT,
 	EXPR_TRUE,
 	EXPR_FALSE,
+	EXPR_NULL,
 	EXPR_INT,
 	EXPR_REAL,
 	EXPR_STRING,
@@ -195,6 +196,13 @@ class AstConstFalse : public AstExpression
 public:
 	AstConstFalse(const YYLTYPE &location)
 		: AstExpression(EXPR_FALSE, location) { AstExpression::datatype = KIML_BOOL; }
+};
+
+class AstConstNull : public AstExpression
+{
+public:
+	AstConstNull(const YYLTYPE &location)
+		: AstExpression(EXPR_NULL, location) { AstExpression::datatype = KIML_OBJECT; }
 };
 
 class AstConstInt : public AstExpression
