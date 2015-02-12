@@ -32,8 +32,8 @@ END
 /////////////////////////////////////////////////////////////////////////////
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,0,0,0
- PRODUCTVERSION 3,0,0,0
+ FILEVERSION 3,1,0,0
+ PRODUCTVERSION 3,1,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -50,12 +50,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "AnhSoftware"
             VALUE "FileDescription", "KimL Compiler and Virtual Machine"
-            VALUE "FileVersion", "3.0.0.0"
+            VALUE "FileVersion", "3.1.0.0"
             VALUE "InternalName", "kiml.exe"
-            VALUE "LegalCopyright", "Copyright (C) 2013 AnhSoftware. All rights reserved."
+            VALUE "LegalCopyright", "Copyright (C) 2014 AnhSoftware. All rights reserved."
             VALUE "OriginalFilename", "kiml.exe"
             VALUE "ProductName", "KimL"
-            VALUE "ProductVersion", "3.0.0.0"
+            VALUE "ProductVersion", "3.1.0.0"
         END
     END
     BLOCK "VarFileInfo"
