@@ -17,8 +17,9 @@ extern "C" {
 
 #include <stdio.h>
 #include <stdint.h>
+#include "opcodes.h"
 
-#define KIML_VERSION 1411
+#define KIML_VERSION 1711
 
 /* =====================================================
  * Types
@@ -120,6 +121,17 @@ KIML_API KIMLBOOL kimlDefineConstantInt(HKIMLCOMPILER compiler, KIMLCSTRING name
 KIML_API KIMLBOOL kimlDefineConstantReal(HKIMLCOMPILER compiler, KIMLCSTRING name, KIMLFLOAT value);
 
 KIML_API KIMLBOOL kimlDefineConstantString(HKIMLCOMPILER compiler, KIMLCSTRING name, KIMLCSTRING value);
+
+KIML_API KIMLBOOL kimlEmit(HKIMLCOMPILER compiler, OpCodes opcode);
+KIML_API KIMLBOOL kimlEmitInt(HKIMLCOMPILER compiler, OpCodes opcode, KIMLINT value);
+KIML_API KIMLBOOL kimlEmitUInt(HKIMLCOMPILER compiler, OpCodes opcode, KIMLUINT value);
+KIML_API KIMLBOOL kimlEmitFloat(HKIMLCOMPILER compiler, OpCodes opcode, KIMLFLOAT value);
+KIML_API KIMLBOOL kimlEmitString(HKIMLCOMPILER compiler, OpCodes opcode, KIMLCSTRING value);
+KIML_API KIMLBOOL kimlEmitJump(HKIMLCOMPILER compiler, OpCodes opcode, KIMLCSTRING label);
+KIML_API KIMLBOOL kimlEmitFuncDecl(HKIMLCOMPILER compiler, KIMLCSTRING funcName);
+KIML_API KIMLBOOL kimlAddLabel(HKIMLCOMPILER compiler, KIMLCSTRING label);
+KIML_API KIMLBOOL kimlMarkLabel(HKIMLCOMPILER compiler, KIMLCSTRING label);
+KIML_API KIMLBOOL kimlBake(HKIMLCOMPILER compiler);
 
 /* =====================================================
  * Runtime services

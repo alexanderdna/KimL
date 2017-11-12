@@ -121,7 +121,9 @@ FUNCEXECUTOR Engine::FuncExecutors[] =
 	Engine::f_peek,
 	Engine::f_min,
 	Engine::f_max,
-	Engine::f_random
+	Engine::f_random,
+	Engine::f_print,
+	Engine::f_readln,
 };
 
 void Engine::PrepareExecutors(void)
@@ -697,7 +699,7 @@ void Engine::do_add(States *states)
 	b = states->estack.back(); states->estack.pop_back();
 	a = states->estack.back(); states->estack.pop_back();
 
-	if (HigherType(a.getDataType(), b.getDataType()) == KIML_STRING)
+	if (HigherType(a.getDataType(), b.getDataType()) > KIML_STRING)
 	{
 		states->err = KRE_TYPE_MISMATCHED;
 		states->isRunning = false;
@@ -1705,4 +1707,26 @@ void Engine::f_random(States *states)
 {
 	KIMLFLOAT v = (KIMLFLOAT)rand() / (KIMLFLOAT)RAND_MAX;
 	states->estack.push_back(Object(v));
+}
+
+void Engine::f_print(States *states)
+{
+	Object obj;
+
+	obj = states->estack.back(); states->estack.pop_back();
+
+	const char *str = obj.getString();
+	printf("%s", str);
+
+	delete[]str;
+
+	states->estack.push_back(Object(0));
+}
+
+void Engine::f_readln(States *states)
+{
+	std::string s;
+	std::getline(std::cin, s);
+
+	states->estack.push_back(Object(s.c_str()));
 }

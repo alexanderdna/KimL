@@ -61,6 +61,18 @@ public:
 
 	void CleanUpAll();
 
+public: // Code Emit API
+	bool Emit(OpCodes opcode);
+	bool Emit(OpCodes opcode, KIMLINT value);
+	bool Emit(OpCodes opcode, KIMLUINT value);
+	bool Emit(OpCodes opcode, KIMLFLOAT value);
+	bool Emit(OpCodes opcode, KIMLCSTRING value);
+	bool EmitJump(OpCodes opcode, KIMLCSTRING label);
+	bool EmitFuncDecl(KIMLCSTRING funcName);
+	bool AddLabel(KIMLCSTRING label);
+	bool MarkLabel(KIMLCSTRING label);
+	bool Bake(void);
+
 private:
 	bool StartCompileInclude(void);
 	bool StartCompile(void);

@@ -28,8 +28,10 @@ bool States::loadByteCode(const KIMLBYTE *byteCodeContent, KIMLUINT byteCodeSize
 	if (strncmp(magic, "kiml", 4))
 		return false;
 
-	// has to be version 13.08 or 14.11
-	if (strncmp(ver, "1308", 4) && strncmp(ver, "1411", 4))
+	// has to be version 13.08, 14.11 or 17.11
+	if (strncmp(ver, "1308", 4)
+		&& strncmp(ver, "1411", 4)
+		&& strncmp(ver, "1711", 4))
 		return false;
 
 	if (*(uint64_t *)pad)

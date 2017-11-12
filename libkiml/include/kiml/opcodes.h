@@ -92,6 +92,8 @@ enum OpCodes
 	op_ldnull = 0x50,    // load null
 	op_cvo    = 0x51,    // convert to object
 
+	op_x      = 0xFE,    // RESERVED
+	op_z      = 0xFF,    // RESERVED
 	op_TOTAL  = op_cvo + 1
 };
 

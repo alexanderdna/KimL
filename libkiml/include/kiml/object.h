@@ -9,7 +9,7 @@
 #include <math.h>
 #include <sstream>
 
-class Object
+class KIML_API Object
 {
 private:
 	KIMLTYPES datatype;
@@ -90,6 +90,20 @@ public:
 		return *this;
 	}
 
+	Object & operator=(Object &&src)
+	{
+		if (this != &src)
+		{
+			if (this->datatype == KIML_STRING && this->svalue)
+				delete[]this->svalue;
+
+			memcpy(this, (void *)&src, sizeof(Object));
+			src.svalue = nullptr;
+		}
+
+		return *this;
+	}
+
 	Object & operator=(bool val)
 	{
 		if (this->datatype == KIML_STRING && this->svalue)
@@ -141,17 +155,6 @@ public:
 
 		this->datatype = KIML_OBJECT;
 		this->ovalue = val;
-
-		return *this;
-	}
-
-	Object & operator=(Object &&src)
-	{
-		if (this != &src)
-		{
-			memcpy(this, (void *)&src, sizeof(Object));
-			src.svalue = nullptr;
-		}
 
 		return *this;
 	}
@@ -307,6 +310,8 @@ public:
 			return Object(this->getInt() + rhs.getInt());
 		case KIML_REAL:
 			return Object(this->getFloat() + rhs.getFloat());
+		case KIML_STRING:
+			return Object::Concat(*this, rhs);
 		default:
 			return Object((KIMLINT)0);
 		}

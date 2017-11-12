@@ -3,7 +3,7 @@
 
 void StringPool::Init(void)
 {
-	this->buffer.reserve(5192); //5KB
+	this->buffer.reserve(5120); //5KB
 }
 
 void StringPool::AddString(KIMLCSTRING str)

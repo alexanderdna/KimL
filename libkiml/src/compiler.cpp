@@ -100,6 +100,95 @@ void Compiler::CleanUpAll()
 	funcTable->CleanUp();
 }
 
+bool Compiler::Emit(OpCodes opcode)
+{
+	ByteCodeStream &bytecode = *this->byteCodeStream;
+	bytecode << opcode;
+	return true;
+}
+
+bool Compiler::Emit(OpCodes opcode, KIMLINT value)
+{
+	ByteCodeStream &bytecode = *this->byteCodeStream;
+	bytecode << opcode << value;
+	return true;
+}
+
+bool Compiler::Emit(OpCodes opcode, KIMLUINT value)
+{
+	ByteCodeStream &bytecode = *this->byteCodeStream;
+	bytecode << opcode << value;
+	return true;
+}
+
+bool Compiler::Emit(OpCodes opcode, KIMLFLOAT value)
+{
+	ByteCodeStream &bytecode = *this->byteCodeStream;
+	bytecode << opcode << value;
+	return true;
+}
+
+bool Compiler::Emit(OpCodes opcode, KIMLCSTRING value)
+{
+	ByteCodeStream &bytecode = *this->byteCodeStream;
+
+	if (value[0] == 0)
+	{
+		return false;
+	}
+	else
+	{
+		this->stringPool->AddString(value);
+		bytecode << opcode << this->stringPool->GetStringAddress(value);
+		return true;
+	}
+}
+
+bool Compiler::EmitJump(OpCodes opcode, KIMLCSTRING label)
+{
+	if (opcode != op_jmp && opcode != op_cjmp)
+		return false;
+
+	ByteCodeStream &bytecode = *this->byteCodeStream;
+
+	bytecode << opcode;
+
+	this->labelTable->AddFixup(label, bytecode.GetStreamSize());
+	bytecode << (KIMLUINT)0;
+	
+	return true;
+}
+
+bool Compiler::EmitFuncDecl(KIMLCSTRING funcName)
+{
+	ByteCodeStream &bytecode = *this->byteCodeStream;
+
+	bytecode << op_fdecl << kimlHashName(funcName);
+
+	this->labelTable->AddFixup(funcName, bytecode.GetStreamSize());
+	bytecode << (KIMLUINT)0;
+
+	return true;
+}
+
+bool Compiler::AddLabel(KIMLCSTRING label)
+{
+	this->labelTable->AddLabel(label);
+	return true;
+}
+
+bool Compiler::MarkLabel(KIMLCSTRING label)
+{
+	this->labelTable->MarkLabel(label, this->byteCodeStream->GetStreamSize());
+	return true;
+}
+
+bool Compiler::Bake(void)
+{
+	this->labelTable->Finish(this->byteCodeStream->GetStream());
+	return true;
+}
+
 bool Compiler::StartCompileInclude(void)
 {
 	if (!this->constTable->HasConst("KIMLVER"))

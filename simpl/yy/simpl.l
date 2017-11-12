@@ -1,10 +1,9 @@
 %{
-	#include "kiml.h"
-	#include "kiml.parser.h"
-	#include "utils.h"
-	
-	#include <math.h>
-	#include <vector>
+  #include <kiml/kiml.h>
+  #include "simpl.parser.h"
+  
+  #include <math.h>
+  #include <vector>
 	
 	int yylineno = 1;
 	int yycolumn = 1;
@@ -41,53 +40,23 @@ litfloat	{digit}+\.{digit}*
 ident		[A-Za-z_][A-Za-z_0-9]*
 
 %x		INLITSTRING
+%x    INCOMMENT
 
 %%
 
 {whitespace}+	{ }
 
-;[^\r\n]*	{ /* comment */ }
-
 \\\r?\n		{ ++yylineno; yycolumn = 1; }
 
-"io"		return TIO;
-"var"		return TVAR;
-"stack"		return TSTACK;
-"tape"		return TTAPE;
-"ctrl"		return TCTRL;
-"func"		return TFUNC;
-"event"		return TEVENT;
-"const"		return TCONST;
-"enum"		return TENUM;
-"in"		return TIN;
-"out"		return TOUT;
-"decl"		return TDECL;
-"set"		return TSET;
-"del"		return TDEL;
-"push"		return TPUSH;
-"pop"		return TPOP;
-"peek"		return TPEEK;
-"swap"		return TSWAP;
-"clear"		return TCLEAR;
-"read"		return TREAD;
-"write"		return TWRITE;
-"next"		return TNEXT;
-"prev"		return TPREV;
-"move"		return TMOVE;
-"goto"		return TGOTO;
-"call"		return TCALL;
-"return"	return TRETURN;
-"end"		return TEND;
-"handle"	return THANDLE;
-"unhandle"	return TUNHANDLE;
-"raise"		return TRAISE;
-"if"		return TIF;
-"at"		return TAT;
-"by"		return TBY;
-"and"		return TAND;
-"or"		return TOR;
-"xor"		return TXOR;
-"not"		return TNOT;
+\/\/[^\r\n]*	{ /* comment */ }
+
+"/*"       { BEGIN(INCOMMENT); }
+
+<INCOMMENT>{
+  \*\/     { BEGIN(INITIAL); }
+  \n       { ++yylineno; yycolumn = 1; }
+  .        { }
+}
 
 "any"		return TANY;
 "bool"		return TBOOL;
@@ -95,11 +64,13 @@ ident		[A-Za-z_][A-Za-z_0-9]*
 "real"		return TREAL;
 "string"	return TSTRING;
 "object"	return TOBJECT;
+"void"    return TANY;
 
 "true"		return TLITTRUE;
 "false"		return TLITFALSE;
 "null"		return TNULL;
 
+";"   return TEOS;
 "."		return TDOT;
 ":"		return TCOLON;
 ","		return TCOMMA;
@@ -110,17 +81,35 @@ ident		[A-Za-z_][A-Za-z_0-9]*
 "*"		return TMUL;
 "/"		return TDIV;
 "%"		return TMOD;
-"^"		return TPOW;
-"&"		return TCAT;
-"="		return TEQU;
-"<>"		return TNEQ;
+"=="		return TEQU;
+"!="		return TNEQ;
 "<"		return TLES;
 "<="		return TLEQ;
 ">"		return TGRT;
 ">="		return TGEQ;
-"@"		return TCINT;
-"#"		return TCREAL;
-"$"		return TCOBJECT;
+"{"   return TLCUR;
+"}"   return TRCUR;
+"["   return TLSQU;
+"]"   return TRSQU;
+"="   return TASN;
+
+"&&"		return TAND;
+"||"		return TOR;
+"^"		return TXOR;
+"!"		return TNOT;
+
+"if"        return TIF;
+"else"      return TELSE;
+"while"     return TWHILE;
+"do"        return TDO;
+"for"       return TFOR;
+"break"     return TBREAK;
+"continue"  return TCONTINUE;
+"return"    return TRETURN;
+"var"       return TVAR;
+"const"     return TCONST;
+"enum"      return TENUM;
+"extern"    return TEXTERN;
 
 {litint}	{
 			yylval->ivalue = atoi(yytext);
@@ -138,7 +127,7 @@ ident		[A-Za-z_][A-Za-z_0-9]*
 		}
 
 {ident}		{
-			yylval->svalue = kimlstrdup(yytext);
+			yylval->svalue = _strdup(yytext);
 			return TIDENT;
 		}
 
@@ -171,7 +160,7 @@ ident		[A-Za-z_][A-Za-z_0-9]*
 	<<EOF>>		{ lexError(yylloc, "Expected closing quotes."); BEGIN(INITIAL); return TEOS; }
 }
 
-\r?\n		{ ++yylineno; yycolumn = 1; return TEOS; }
+\r?\n		{ ++yylineno; yycolumn = 1; }
 
 .		{ lexError(yylloc, "Unrecognized character."); return TEOS; }
 

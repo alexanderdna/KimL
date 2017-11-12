@@ -127,6 +127,8 @@ private:
 	static void f_min(States *states);
 	static void f_max(States *states);
 	static void f_random(States *states);
+	static void f_print(States *states);
+	static void f_readln(States *states);
 
 public:
 	static void PrepareExecutors(void);

@@ -75,7 +75,7 @@ KIML_API KIMLCSTRING kimlGetCompileErrorMessage(KIMLCOMPILEERRORCODES errCode)
 KIML_API KIMLVOID kimlGetByteCode(HKIMLCOMPILER compiler, KIMLBYTE **byteCodeContent, KIMLUINT *byteCodeSize)
 {
 	KIMLCHAR magic[] = { 'k', 'i', 'm', 'l' };
-	KIMLCHAR ver[]   = { '1', '4', '1', '1' };
+	KIMLCHAR ver[]   = { '1', '7', '1', '1' };
 	KIMLBYTE pad[8]  = { 0 };
 
 	auto byteCodeStream = COMP->GetByteCodeStream();
@@ -174,6 +174,86 @@ KIML_API KIMLBOOL kimlDefineConstantString(HKIMLCOMPILER compiler, KIMLCSTRING n
 {
 	Object obj = value;
 	if (!COMP->AddConst(name, obj))
+		return FALSE;
+	else
+		return TRUE;
+}
+
+KIML_API KIMLBOOL kimlEmit(HKIMLCOMPILER compiler, OpCodes opcode)
+{
+	if (!COMP->Emit(opcode))
+		return FALSE;
+	else
+		return TRUE;
+}
+
+KIML_API KIMLBOOL kimlEmitInt(HKIMLCOMPILER compiler, OpCodes opcode, KIMLINT value)
+{
+	if (!COMP->Emit(opcode, value))
+		return FALSE;
+	else
+		return TRUE;
+}
+
+KIML_API KIMLBOOL kimlEmitUInt(HKIMLCOMPILER compiler, OpCodes opcode, KIMLUINT value)
+{
+	if (!COMP->Emit(opcode, value))
+		return FALSE;
+	else
+		return TRUE;
+}
+
+KIML_API KIMLBOOL kimlEmitFloat(HKIMLCOMPILER compiler, OpCodes opcode, KIMLFLOAT value)
+{
+	if (!COMP->Emit(opcode, value))
+		return FALSE;
+	else
+		return TRUE;
+}
+
+KIML_API KIMLBOOL kimlEmitString(HKIMLCOMPILER compiler, OpCodes opcode, KIMLCSTRING value)
+{
+	if (!COMP->Emit(opcode, value))
+		return FALSE;
+	else
+		return TRUE;
+}
+
+KIML_API KIMLBOOL kimlEmitJump(HKIMLCOMPILER compiler, OpCodes opcode, KIMLCSTRING label)
+{
+	if (!COMP->EmitJump(opcode, label))
+		return FALSE;
+	else
+		return TRUE;
+}
+
+KIML_API KIMLBOOL kimlEmitFuncDecl(HKIMLCOMPILER compiler, KIMLCSTRING funcName)
+{
+	if (!COMP->EmitFuncDecl(funcName))
+		return FALSE;
+	else
+		return TRUE;
+}
+
+KIML_API KIMLBOOL kimlAddLabel(HKIMLCOMPILER compiler, KIMLCSTRING label)
+{
+	if (!COMP->AddLabel(label))
+		return FALSE;
+	else
+		return TRUE;
+}
+
+KIML_API KIMLBOOL kimlMarkLabel(HKIMLCOMPILER compiler, KIMLCSTRING label)
+{
+	if (!COMP->MarkLabel(label))
+		return FALSE;
+	else
+		return TRUE;
+}
+
+KIML_API KIMLBOOL kimlBake(HKIMLCOMPILER compiler)
+{
+	if (!COMP->Bake())
 		return FALSE;
 	else
 		return TRUE;

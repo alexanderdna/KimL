@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "functions.h"
 
 KIMLCSTRING builtinFunctionNames[] =
@@ -42,32 +41,32 @@ FunctionInfo builtinFunctionInfos[] =
 	FunctionInfo("readln", KIML_STRING, KIML_NOTYPE)
 };
 
-KIMLCOMPILEERRORCODES FunctionTable::AddFunction(KIMLCSTRING name, const FunctionInfo &funcInfo)
+SIMPLCOMPILEERRORCODES FunctionTable::AddFunction(KIMLCSTRING name, const FunctionInfo &funcInfo)
 {
 	std::string s(name);
 	tabletype::iterator it = table.find(s);
 
 	if (it != table.end())
-		return KCE_DUPLICATE_FUNC;
+		return SCE_DUPLICATE_SYMBOL;
 
 	KIMLUINT fidx;
 	if (GetBuiltinFunctionInfo(name, fidx))
-		return KCE_DUPLICATE_FUNC;
+		return SCE_DUPLICATE_SYMBOL;
 	
 	table[s] = funcInfo;
-	return KCE_NONE;
+	return SCE_NONE;
 }
 
-KIMLCOMPILEERRORCODES FunctionTable::GetFunction(KIMLCSTRING name, FunctionInfo &funcInfo)
+SIMPLCOMPILEERRORCODES FunctionTable::GetFunction(KIMLCSTRING name, const FunctionInfo *&funcInfo)
 {
 	std::string s(name);
 	tabletype::iterator it = table.find(s);
 
 	if (it == table.end())
-		return KCE_UNDECLARED_FUNC;
+		return SCE_UNDECLARED_SYMBOL;
 
-	funcInfo = it->second;
-	return KCE_NONE;
+	funcInfo = &it->second;
+	return SCE_NONE;
 }
 
 void FunctionTable::CleanUp(void)
