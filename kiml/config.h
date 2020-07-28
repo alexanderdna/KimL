@@ -1,7 +1,7 @@
 #ifndef __CONFIG_H__
 #define __CONFIG_H__
 
-#define LANGVER	"14.11"
+#define LANGVER	"17.11"
 #define APPVER	"3.1"
 
 #if defined(WIN32) || defined(_WIN32)

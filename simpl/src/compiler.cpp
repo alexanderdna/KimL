@@ -314,6 +314,30 @@ bool Compiler::Emit(AstFunc *statement)
 			return false;
 
 	LeaveScope();
+
+	switch (currentFunction->returnType)
+	{
+		case KIML_BOOL:
+			Emit(op_ldfalse);
+			break;
+		case KIML_ANYTYPE:
+		case KIML_INT:
+			Emit(op_ldi, 0);
+			break;
+		case KIML_REAL:
+			Emit(op_ldr, 0);
+			break;
+		case KIML_STRING:
+			Emit(op_ldes);
+			break;
+		case KIML_OBJECT:
+			Emit(op_ldnull);
+			break;
+	}
+
+	Emit(op_twr0);
+	Emit(op_ret);
+
 	currentFunction = nullptr;
 
 	return true;

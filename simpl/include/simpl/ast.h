@@ -54,7 +54,7 @@ public:
 	{
 	}
 
-	~AstExpression(void)
+	virtual ~AstExpression(void)
 	{
 		if (this->constval)
 			delete this->constval;
